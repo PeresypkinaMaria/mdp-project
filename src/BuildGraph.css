@@ -1,8 +1,28 @@
-#cy {
-    width: 50%;
-    /*height: 100%;*/
-    position: absolute;
-    /*top: 0px;*/
-    left: 0;
+#table{
+    width: 100%;
+}
+
+.my-graph{
+    width: 66.5%;
+    border: 3px solid #FFCC66;
+    border-radius: 5px;
+    float: left;
+    width: 66.5%;
+    margin-left: 1%;
     margin-top: 20px;
+}
+
+#cy {
+    width: 66.5%;
+    height: 90%;
+    margin-top: 10px;
+    border: 3px solid #FFCC66;
+    border-radius: 5px;
+    /*float: left;
+    margin-left: 1%;*/
+    position: absolute;
+    left: 0;
+    margin-left: 1%;
+    margin-bottom: 20px;
+    /*top: 0px;*/
 }

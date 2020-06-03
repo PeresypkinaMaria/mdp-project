@@ -78,8 +78,8 @@ class DataRow extends React.Component{
                         value: this.props.mdpItem.reward,
                         id: this.props.mdpItem.id}}
                 />
-                <td className="btn-field">
-                    <button className="remove-row" onClick={this.onRemoveEvent.bind(this)}>X</button>
+                <td>
+                    <button className="red-btn remove-row" onClick={this.onRemoveEvent.bind(this)}>X</button>
                 </td>
             </tr>
         );
@@ -89,7 +89,7 @@ class DataRow extends React.Component{
 class EditableCell extends React.Component{
     render() {
         return(
-            <td className="data-fields">
+            <td>
                 <input
                     type="text"
                     name={this.props.cellData.type}

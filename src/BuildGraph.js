@@ -23,17 +23,28 @@ export default class BuildGraph extends React.Component{
         let initstate = init_state;
         let gamma = g;
         //var mdpLogic = new MdpLogic(arr_data, init_state, gamma);
-        var my_g = new MyGraph(arr_data, initstate, gamma);
-        my_g.createGraph();
+        let my_graph = new MyGraph(arr_data, initstate, gamma);
+        this.setState({graph: my_graph});
+        my_graph.createGraph();
+    };
+
+    clear = (event) => {
+        if (event) {
+            //let my_graph = document.getElementById('cy');
+            this.state.graph.destroyGraph();
+        }
     };
 
     render() {
         return(
             <div>
-                <div className="mdp-table">
-                    <MdpData id="table" updateData={this.updateData}></MdpData>
+                <div>
+                    <MdpData id="table"
+                             updateData={this.updateData}
+                             clear={this.clear}>
+                    </MdpData>
                 </div>
-                <div id="cy"></div>
+                    <div id="cy"></div>
             </div>
         )
     }

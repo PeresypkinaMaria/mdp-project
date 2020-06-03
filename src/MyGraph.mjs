@@ -83,7 +83,9 @@ export default class MyGraph {
                         'target-arrow-color': '#66FF66'
                     }
                 }],
-            userZoomingEnabled: false, //увеличение или уменьшение графа
+            //zoom: 1,
+            userZoomingEnabled: true, //увеличение или уменьшение графа
+            //minZoom:
             userPanningEnabled: false //перемещение всего графа
         });
 
@@ -142,9 +144,14 @@ export default class MyGraph {
                 }
             }
         }
+        this.graph = cy;
         let layout = cy.layout({name:'circle'});
-        cy.center();
+        //cy.center();
         layout.run();
+    }
+
+    destroyGraph(){
+        this.graph.destroy();
     }
 
     checkOptimal(state, action){

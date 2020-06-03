@@ -2,21 +2,19 @@ import React from 'react';
 import MdpTable from "./MdpTable";
 import "./MdpData.css";
 
-function generateID() {
-    return Math.random().toString(36).substr(2, 6);
-}
-
 export default class MdpData extends React.Component {
     constructor(props) {
         super(props);
 
         this.handleChangeInitState = this.handleChangeInitState.bind(this);
         this.handleChangeGamma = this.handleChangeGamma.bind(this);
+        this.handleClear = this.handleClear.bind(this);
+        this.handleDownload = this.handleDownload.bind(this);
 
         this.state = {};
-        this.state.mdpdata = [{id:'111111', from_state: '', action: '', to_state: '', probability: '', reward: ''}];
+        this.state.mdpdata = [{id:generateID(), from_state: '', action: '', to_state: '', probability: '', reward: ''}];
         this.state.init_state = '';
-        this.state.gamma = 0;
+        this.state.gamma = 0.9;
     }
 
     //dataFromTable = this.state.mdpdata;
@@ -70,6 +68,25 @@ export default class MdpData extends React.Component {
         }
     };
 
+    handleClear(){
+        this.setState({mdpdata: [{id:'111111', from_state: '', action: '', to_state: '', probability: '', reward: ''}]});
+        this.setState({init_state: ''});
+        this.setState({gamma: 0.9});
+        this.props.clear(true);
+        //this.props.updateData(this.state.mdpdata, this.state.init_state, this.state.gamma);
+    };
+
+    handleDownload(){
+        let file = mdpToString(this.state.mdpdata, this.state.init_state, this.state.gamma);
+        let element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(file));
+        element.setAttribute('download', 'data.txt');
+        element.style.display = 'none';
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+    };
+
     render() {
         return(
             <div className="data">
@@ -80,25 +97,46 @@ export default class MdpData extends React.Component {
                         onRemoveRow={this.handleRemoveRow.bind(this)}
                         mdpData={this.state.mdpdata}/>
                 </div>
-
                 <div className="optional">
-                    <div className="init-data">
-                        <label>
-                        Initial state
-                        <input type="text" name="init_state"  value={this.state.init_state} onChange={this.handleChangeInitState}/>
-                        </label>
-                    </div>
-                    <div className="init-data">
-                        <label>
-                            Gamma
-                            <input type="number" name="gamma" min="0" max="1" step="0.1" value={this.state.gamma} onChange={this.handleChangeGamma} />
-                        </label>
+                    <div>
+                        <div className="init-data">
+                            <label>
+                            Initial state
+                            <input type="text" name="init_state"  value={this.state.init_state} onChange={this.handleChangeInitState}/>
+                            </label>
+                        </div>
+                        <div className="init-data">
+                            <label>
+                                Gamma
+                                <input type="number" name="gamma" min="0" max="1" step="0.1" value={this.state.gamma} onChange={this.handleChangeGamma} />
+                            </label>
+                        </div>
                     </div>
                     <div>
-                        <button type="button" className="green-btn" onClick={() => this.props.updateData(this.state.mdpdata, this.state.init_state, this.state.gamma)}>Create graph</button>
+                        <button className="green-btn" onClick={() => this.props.updateData(this.state.mdpdata, this.state.init_state, this.state.gamma)}>Create graph</button>
+                        <button className="red-btn" onClick={this.handleClear}>Clear</button>
+                    </div>
+                    <div>
+                        <button className="load-btn" onClick={this.handleDownload}>Download</button>
+                        <button className="load-btn">Upload</button>
                     </div>
                 </div>
             </div>
         );
     }
+}
+
+function generateID() {
+    return Math.random().toString(36).substr(2, 6);
+}
+
+function mdpToString(mdp, init_state, gamma) {
+    let result = '';
+    for (let item of mdp){
+        result += 'id: ' + item.id + ', from_state: ' + item.from_state + ', action: ' + item.action + ', to_state: ' +
+            item.to_state + ', probability: ' + item.probability + ', reward: ' + item.reward + '\n';
+    };
+    result += 'initial_state: ' + init_state + '\n';
+    result += 'gamma: ' + gamma;
+    return result;
 }

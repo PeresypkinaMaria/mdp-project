@@ -1,19 +1,22 @@
 .data{
-    margin: 7px 0;
+    overflow: hidden;
 }
 
 .mtable{
-    border: 3px solid #cccccc;
+    border: 3px solid #FFCC66;
     border-radius: 5px;
+    /*position: absolute;*/
     float: left;
     width: 66.5%;
     margin-left: 1%;
 }
 
 .optional{
-    border: 3px solid #cccccc;
+    border: 3px solid #FFCC66;
     border-radius: 5px;
-    float: right;
+    /*float: right;*/
+    position: fixed;
+    left: 69%;
     width: 30%;
     margin-right: 1%;
 }
@@ -27,24 +30,52 @@
     width: 50px;
 }
 
+/*buttons*/
 button{
     padding: 5px 10px;
     border-radius: 5px;
     background-color: #FFFFFF;
     color: #000000;
     transition-duration: 0.3s;
-    text-align: center;
-    margin: 15px 10px;
     font-size: 16px;
-    border: 2px solid #4CAF50;
+    text-align: center;
+    border: 2px solid;
+    margin: 10px 10px;
 }
 
 .green-btn{
+    /*background-color: rgb(0, 204, 51);*/
+    border-color: #4CAF50;
 }
 
 .green-btn:hover{
     /*box-shadow: 5px 5px 10px 0 rgba(0,0,0,0.24);*/
     /*background-color: green;*/
     background-color: #4CAF50;
+}
+
+.red-btn{
+    border-color: #F44336;
+}
+
+.remove-row{
+    margin: auto;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.red-btn:hover{
+    background-color: #F44336;
+}
+
+.load-btn{
+    border-color: #3366CC;
+}
+
+.load-btn:hover{
+    background-color: #3366CC;
+}
+
+.green-btn:hover, .red-btn:hover, .load-btn:hover{
     color: #FFFFFF;
 }
