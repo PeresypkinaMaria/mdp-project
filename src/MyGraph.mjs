@@ -2,11 +2,11 @@
 import cytoscape from 'cytoscape';
 //import cytoscape from "../node_modules/cytoscape/dist/cytoscape.min.js"
 //import cytoscape from "dist/cytoscape.cjs.js";
-import MdpLogic from "./MdpLogic.mjs";
+//import MdpLogic from "./MdpLogic.mjs";
 
 export default class MyGraph {
-    constructor(g_data, i_state, gam) {
-        this.mdpLogic = new MdpLogic(g_data, i_state, gam);
+    constructor(mdpLogic) {
+        this.mdpLogic = mdpLogic;
         this.optimalActions = this.mdpLogic.optimalActions;
     }
 

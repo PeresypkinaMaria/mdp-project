@@ -64,7 +64,7 @@ class DataRow extends React.Component{
                         value: this.props.mdpItem.to_state,
                         id: this.props.mdpItem.id}}
                 />
-                <EditableCell
+                <EditableNumberCell
                     onDataTableUpdate={this.props.onDataTableUpdate}
                     cellData={{
                         "type": "probability",
@@ -95,8 +95,40 @@ class EditableCell extends React.Component{
                     name={this.props.cellData.type}
                     id={this.props.cellData.id}
                     value={this.props.cellData.value}
+                    onChange={this.props.onDataTableUpdate} onKeyDown="return checkInput(this.props.cellData.type, event.key, this.props.cellData.value)"/>
+            </td>
+        );
+    }
+}
+
+//for Probability field
+class EditableNumberCell extends React.Component{
+    render() {
+        return(
+            <td>
+                <input
+                    type="number"
+                    min="0.001" max="1" step="0.1"
+                    name={this.props.cellData.type}
+                    id={this.props.cellData.id}
+                    value={this.props.cellData.value}
                     onChange={this.props.onDataTableUpdate}/>
             </td>
         );
     }
 }
+
+/*function checkInput(type, key, value) {
+    if (type === "from_state" || type === "action" || type === "to_state"){
+        return true;
+    }
+    if (type === "probability"){
+        if ((value.length == 0 && ((key >= '2' && key <= '9') || key == '.' || key == ','))
+            || (value.length == 1 && (key >= '0' && key <= '9'))
+            || (value.length >= 2 && (key == '.' || key == ','))
+            || (key == 'e')){
+            return false;
+        }
+    }
+    return false;
+}*/

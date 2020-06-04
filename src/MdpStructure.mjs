@@ -36,6 +36,14 @@ export default class MdpStructure {
         }
     }
 
+    checkInitState(){
+        for (let state of this.getAllStates()){
+            if (state == this.initial_state)
+                return true;
+        }
+        return false;
+    }
+
     reset() {
     } //??
 }

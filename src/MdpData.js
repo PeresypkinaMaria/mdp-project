@@ -12,7 +12,7 @@ export default class MdpData extends React.Component {
         this.handleDownload = this.handleDownload.bind(this);
 
         this.state = {};
-        this.state.mdpdata = [{id:generateID(), from_state: '', action: '', to_state: '', probability: '', reward: ''}];
+        this.state.mdpdata = [{id:generateID(), from_state: '', action: '', to_state: '', probability: 0.1, reward: ''}];
         this.state.init_state = '';
         this.state.gamma = 0.9;
     }
@@ -31,7 +31,7 @@ export default class MdpData extends React.Component {
             from_state: "",
             action: "",
             to_state: "",
-            probability: "",
+            probability: 0,
             reward: ""
         };
         this.state.mdpdata.push(mdpItem);
@@ -69,7 +69,7 @@ export default class MdpData extends React.Component {
     };
 
     handleClear(){
-        this.setState({mdpdata: [{id:'111111', from_state: '', action: '', to_state: '', probability: '', reward: ''}]});
+        this.setState({mdpdata: [{id:'111111', from_state: '', action: '', to_state: '', probability: 0, reward: ''}]});
         this.setState({init_state: ''});
         this.setState({gamma: 0.9});
         this.props.clear(true);
@@ -77,9 +77,11 @@ export default class MdpData extends React.Component {
     };
 
     handleDownload(){
-        let file = mdpToString(this.state.mdpdata, this.state.init_state, this.state.gamma);
+        let json = JSON.stringify(this.state.mdpdata);
+        /*json += JSON.stringify(this.state.init_state);
+        json += JSON.stringify(this.state.gamma);*/
         let element = document.createElement('a');
-        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(file));
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(json));
         element.setAttribute('download', 'data.txt');
         element.style.display = 'none';
         document.body.appendChild(element);
@@ -130,7 +132,7 @@ function generateID() {
     return Math.random().toString(36).substr(2, 6);
 }
 
-function mdpToString(mdp, init_state, gamma) {
+/*function mdpToString(mdp, init_state, gamma) {
     let result = '';
     for (let item of mdp){
         result += 'id: ' + item.id + ', from_state: ' + item.from_state + ', action: ' + item.action + ', to_state: ' +
@@ -139,4 +141,4 @@ function mdpToString(mdp, init_state, gamma) {
     result += 'initial_state: ' + init_state + '\n';
     result += 'gamma: ' + gamma;
     return result;
-}
+}*/

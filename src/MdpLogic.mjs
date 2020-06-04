@@ -6,7 +6,7 @@ export default class MdpLogic {
         this.gamma = gamma;
         this.stateValues = [];
         this.optimalActions = this.getOptimalActions();
-    }
+    };
 
     getActionValue(state_values, state, action) {
         let q = 0;
@@ -15,7 +15,7 @@ export default class MdpLogic {
             q += this.mdp.getTransitionProb(state, action, ns) * (this.mdp.getReward(state, action, ns) + this.gamma * state_values.get(ns));
         }
         return q;
-    }
+    };
 
     getNewStateValue(state_values, state) {
         if (this.mdp.isTerminal(state))
@@ -26,7 +26,7 @@ export default class MdpLogic {
             q.push(this.getActionValue(state_values, state, act, this.gamma));
         }
         return getMaxOfArray(q);
-    }
+    };
 
     getFinalStateValue(){
         var num_iter = 100;
@@ -69,7 +69,7 @@ export default class MdpLogic {
             console.log(s, state_values.get(s));
         }*/
         this.stateValues = state_values;
-    }
+    };
 
     getOptimalAction(state){
         this.getFinalStateValue();
@@ -88,7 +88,7 @@ export default class MdpLogic {
         let max_q = getMaxOfArray(q_arr);
         let act = q_values.get(max_q);
         return act;
-    }
+    };
 
     getOptimalActions(){
         let act_arr = new Map();
@@ -98,7 +98,45 @@ export default class MdpLogic {
             act_arr.set(state, act);
         }
         return act_arr;
-    }
+    };
+
+    checkData(){
+        //check for initial state
+        if (this.mdp.initial_state == '' || !this.mdp.checkInitState){
+            alert("Please, enter the correct Initial state!");
+            return false;
+        }
+
+        //check for gamma
+        if (isNaN(this.gamma) === true || this.gamma == ""){
+            alert("Please, enter the correct Gamma!");
+            return false;
+        }
+
+        for (let state of this.mdp.getAllStates()){
+            for (let action of this.mdp.getPossibleActions(state)){
+                let sum_probs = 0;
+                for (let next_state of this.mdp.getNextStates(state, action)) {
+                    sum_probs += this.mdp.getTransitionProb(state, action, next_state);
+
+                    //check for rewards
+                    if (isNaN(this.mdp.getReward(state, action, next_state)) === true) {
+                        alert("Please, input only numbers to rewards! Please, check reward with data: state - " + state
+                        + "; action -  " + action + "; to state - " + next_state);
+                        return false;
+                    }
+                }
+
+                //check for probabilities
+                if (sum_probs != 1){
+                    alert("The sum of the probabilities for one state should be equal to 1! Please, check actions like "
+                    + action + " for state " + state);
+                    return false;
+                }
+            }
+        }
+        return true;
+    };
 }
 
 export function getMaxOfArray(numArray){
