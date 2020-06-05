@@ -1,7 +1,7 @@
 import React from 'react';
-import MdpData from "./MdpData";
-import MdpLogic from "./MdpLogic";
-import MyGraph from "./MyGraph";
+import MdpData from "./MdpData.js";
+import MdpLogic from "./MdpLogic.js";
+import MyGraph from "./MyGraph.js";
 import "./BuildGraph.css"
 
 export default class BuildGraph extends React.Component{
@@ -13,7 +13,7 @@ export default class BuildGraph extends React.Component{
 
     updateData = (arr, init_state, g) => {
         let mdpLogic = new MdpLogic(arr, init_state, g);
-        if (mdpLogic.checkData() == true) {
+        if (mdpLogic.checkData() === true) {
             let my_graph = new MyGraph(mdpLogic);
             this.setState({graph: my_graph});
             my_graph.createGraph();

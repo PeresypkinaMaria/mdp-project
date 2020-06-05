@@ -1,13 +1,9 @@
-//import React from 'react';
 import cytoscape from 'cytoscape';
-//import cytoscape from "../node_modules/cytoscape/dist/cytoscape.min.js"
-//import cytoscape from "dist/cytoscape.cjs.js";
-//import MdpLogic from "./MdpLogic.mjs";
 
 export default class MyGraph {
     constructor(mdpLogic) {
         this.mdpLogic = mdpLogic;
-        this.optimalActions = this.mdpLogic.optimalActions;
+        //this.optimalActions = this.mdpLogic.getOptimalActions();
     }
 
     createGraph(){
@@ -89,9 +85,10 @@ export default class MyGraph {
             userPanningEnabled: false //перемещение всего графа
         });
 
+        let optimalActions = this.mdpLogic.getOptimalActions();
         let i = 0;
         let j = 0;
-        let created_nodes = new Array();
+        let created_nodes = [];
         for (let state of this.mdpLogic.mdp.getAllStates()){
             if (!(created_nodes.includes(state))) {
                 cy.add({
@@ -111,8 +108,8 @@ export default class MyGraph {
                 });
                 j++;
 
-                let cl = 'from_state'
-                if (this.checkOptimal(state, action)){
+                let cl = 'from_state';
+                if (optimalActions.has(state) && optimalActions.get(state) === action){
                     cl = 'optimal'
                 }
                 let s_to_a = state + action;
@@ -135,7 +132,7 @@ export default class MyGraph {
                     i++;
                     let prob = 'P: ' + this.mdpLogic.mdp.getTransitionProb(state, action, ns);
                     let reward = '; R: ' + this.mdpLogic.mdp.getReward(state, action, ns);
-                    let edge_name = (this.mdpLogic.mdp.getReward(state, action, ns) == 0) ? prob : prob + reward;
+                    let edge_name = (this.mdpLogic.mdp.getReward(state, action, ns) === 0) ? prob : prob + reward;
                     cy.add({
                         group: 'edges',
                         data: {id: a_to_s, name: edge_name, source: new_act, target: ns, label: prob},
@@ -154,9 +151,9 @@ export default class MyGraph {
         this.graph.destroy();
     }
 
-    checkOptimal(state, action){
-        return this.optimalActions.has(state) && this.optimalActions.get(state) == action;
-    }
+    /*checkOptimal(state, action){
+        return this.optimalActions.has(state) && this.optimalActions.get(state) === action;
+    }*/
 }
 
 /*var g_data = [

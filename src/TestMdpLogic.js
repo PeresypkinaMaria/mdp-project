@@ -1,5 +1,5 @@
-import MdpLogic from "./MdpLogic.mjs";
-import {getMaxOfArray} from "./MdpLogic.mjs";
+import MdpLogic from "./MdpLogic.js";
+//import {getMaxOfArray} from "./MdpLogic.js";
 
 var data = [
     {from_state: 's0', action: 'a0', to_state: 's0', probability: 0.5, reward: 0},

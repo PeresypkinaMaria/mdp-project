@@ -95,7 +95,7 @@ class EditableCell extends React.Component{
                     name={this.props.cellData.type}
                     id={this.props.cellData.id}
                     value={this.props.cellData.value}
-                    onChange={this.props.onDataTableUpdate} onKeyDown="return checkInput(this.props.cellData.type, event.key, this.props.cellData.value)"/>
+                    onChange={this.props.onDataTableUpdate}/>
             </td>
         );
     }

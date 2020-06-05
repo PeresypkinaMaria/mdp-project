@@ -17,7 +17,8 @@ export default class MdpStructure {
 
     //проверка, является ли state конечным
     isTerminal(state) {
-        return this.getPossibleActions(state).size == 0;
+        //return this.getPossibleActions(state).size === 0;
+        return this.transition_probs.get(state).size === 0;
     }
 
     getNextStates(state, action) {
@@ -38,7 +39,7 @@ export default class MdpStructure {
 
     checkInitState(){
         for (let state of this.getAllStates()){
-            if (state == this.initial_state)
+            if (state === this.initial_state)
                 return true;
         }
         return false;
@@ -50,30 +51,33 @@ export default class MdpStructure {
 
 function createTransitionProbs(mdp_data) {
     let tp = new Map();
-    for (let mdp_d of mdp_data) {
-        var probs;
-        var actions = tp.get(mdp_d.from_state);
+    for (let item of mdp_data) {
+        let probs;
+        let actions = tp.get(item.from_state);
         //если новый state (которого еще нет в tp)
         if (typeof actions == "undefined") {
             actions = new Map();
             probs = new Map();
-            probs.set(mdp_d.to_state, Number(mdp_d.probability));
-            actions.set(mdp_d.action, probs);
-            tp.set(mdp_d.from_state, actions);
+            probs.set(item.to_state, Number(item.probability));
+            actions.set(item.action, probs);
+            tp.set(item.from_state, actions);
         } else { //если в tp есть такой state
-            probs = actions.get(mdp_d.action);
+            probs = actions.get(item.action);
             //если новый action (которого нет у данного state)
             if (typeof probs == "undefined") {
                 probs = new Map();
-                probs.set(mdp_d.to_state, Number(mdp_d.probability));
-                actions.set(mdp_d.action, probs);
+                probs.set(item.to_state, Number(item.probability));
+                actions.set(item.action, probs);
             } else { //если action для данного state есть
-                if (!(probs.has(mdp_d.to_state))) { //если нет to_state для данного action
-                    probs.set(mdp_d.to_state, Number(mdp_d.probability));
+                if (!(probs.has(item.to_state))) { //если нет to_state для данного action
+                    probs.set(item.to_state, Number(item.probability));
                 } else {
                     //дублирование данных
                 }
             }
+        }
+        if (!(tp.has(item.to_state))){
+            tp.set(item.to_state, new Map());
         }
     }
     return tp;
@@ -82,11 +86,11 @@ function createTransitionProbs(mdp_data) {
 function createRewards(mdp_data) {
     let rwd = new Map();
     for (let mdp_d of mdp_data) {
-        if (Number(mdp_d.reward) != 0) {
-            var rews;
-            var actions = rwd.get(mdp_d.from_state);
+        if (Number(mdp_d.reward) !== 0) {
+            let rews;
+            let actions = rwd.get(mdp_d.from_state);
             //если новый state (которого еще нет в tp)
-            if (typeof actions == "undefined") {
+            if (typeof actions === "undefined") {
                 actions = new Map();
                 rews = new Map();
                 rews.set(mdp_d.to_state, Number(mdp_d.reward));

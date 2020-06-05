@@ -12,7 +12,7 @@ export default class MdpData extends React.Component {
         this.handleDownload = this.handleDownload.bind(this);
 
         this.state = {};
-        this.state.mdpdata = [{id:generateID(), from_state: '', action: '', to_state: '', probability: 0.1, reward: ''}];
+        this.state.mdpdata = [{id:generateID(), from_state: '', action: '', to_state: '', probability: 0, reward: ''}];
         this.state.init_state = '';
         this.state.gamma = 0.9;
     }
@@ -44,10 +44,10 @@ export default class MdpData extends React.Component {
             name: evt.target.name,
             value: evt.target.value
         };
-        var mdpArr = this.state.mdpdata.slice();
-        var newArr = mdpArr.map(function (mdpItem) {
-            for (var key in mdpItem){
-                if (key == item.name && mdpItem.id == item.id){
+        let mdpArr = this.state.mdpdata.slice();
+        let newArr = mdpArr.map(function (mdpItem) {
+            for (let key in mdpItem){
+                if (key === item.name && mdpItem.id === item.id){
                     mdpItem[key] = item.value;
                 }
             }
