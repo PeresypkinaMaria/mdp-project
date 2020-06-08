@@ -79,3 +79,7 @@ button{
 .green-btn:hover, .red-btn:hover, .load-btn:hover{
     color: #FFFFFF;
 }
+
+#upload{
+    display: none;
+}

@@ -18,7 +18,6 @@ export default class MdpLogic {
         return q;
     };
 
-    //get next V(s) ~ V(s) for i+1 ~ maxQ(s, a) for i
     getNewStateValue(state_values, state) {
         if (this.mdp.isTerminal(state))
             return 0;
@@ -30,11 +29,23 @@ export default class MdpLogic {
         return getMaxOfArray(q);
     };
 
-    getFinalStateValue(){
-        var num_iter = 100;
-        var min_diff = 0.001;
-        var state_values = new Map();
+    getNewStateValueVI(state_values, state){
+        if (this.mdp.isTerminal(state))
+            return 0;
+        let sv = 0;
+        let actions = this.mdp.getPossibleActions(state);
+        for (let action of actions) {
+            sv += this.getActionValue(state_values, state, action);
+        }
+        return sv;
+    };
 
+    iterativePolicyEvaluation(){
+        let num_iter = 100;
+        let min_diff = 0.001;
+        let state_values = new Map();
+
+        //инициализация
         for (let state of this.mdp.getAllStates()){
             state_values.set(state, 0);
         }
@@ -90,7 +101,7 @@ export default class MdpLogic {
     };
 
     getOptimalActions(){
-        this.getFinalStateValue();
+        this.iterativePolicyEvaluation();
         let actions = new Map();
         for (let state of this.mdp.getAllStates()){
             if (!(this.mdp.isTerminal(state))){

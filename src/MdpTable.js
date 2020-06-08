@@ -3,9 +3,9 @@ import './MdpTable.css';
 
 export default class MdpTable extends React.Component{
     render() {
-        var onDataTableUpdate = this.props.onDataTableUpdate;
-        var removeRow = this.props.onRemoveRow;
-        var mdpItem = this.props.mdpData.map(function (mdpItem) {
+        let onDataTableUpdate = this.props.onDataTableUpdate;
+        let removeRow = this.props.onRemoveRow;
+        let mdpItem = this.props.mdpData.map(function (mdpItem) {
             return (
                 <DataRow
                     onDataTableUpdate={onDataTableUpdate}

@@ -9,6 +9,7 @@ export default class BuildGraph extends React.Component{
         super(props);
         this.updateData = this.updateData.bind(this);
         this.state = {};
+        //this.state.graph = null;
     }
 
     updateData = (arr, init_state, g) => {
