@@ -85,13 +85,10 @@ export default class MdpData extends React.Component {
         this.setState({init_state: ''});
         this.setState({gamma: 0.9});
         this.props.clear(true);
-        //this.props.updateData(this.state.mdpdata, this.state.init_state, this.state.gamma);
     };
 
     handleDownload() {
         let json = JSON.stringify(this.state.mdpdata);
-        /*json += JSON.stringify(this.state.init_state);
-        json += JSON.stringify(this.state.gamma);*/
         let element = document.createElement('a');
         element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(json));
         element.setAttribute('download', 'data.txt');
@@ -108,44 +105,24 @@ export default class MdpData extends React.Component {
 
     handleUpload() {
         let file = document.getElementById("upload").files[0];
-        //this.setState({file: file});
-        //this.saveData();
-        //this.setState({file: event.target.files[0]});
-        //let file = event.target.files[0];
-        if (file.name.split('.')[1] !== 'txt') {
-            alert("You can upload only txt files.");
-        } else {
-            let reader = new FileReader();
+        let reader = new FileReader();
 
-            //reader.onload = function(reader, _) {saveData(reader, this)};
-            reader.onload = function(){
-                //console.log(reader.result);
-                let text = reader.result;
-                let items = JSON.parse(text);
-                this.handleClear();
-                for (let item of items) {
-                    this.state.mdpdata.push(item);
-                }
-                this.setState(this.state.mdpdata);
-            }.bind(this);
+        reader.onload = function(){
+            let text = reader.result;
+            let items = JSON.parse(text);
+            this.handleClear();
+            /*for (let item of items) {
+                this.state.mdpdata.push(item);
+            }*/
+            this.setState({mdpdata: items});
+        }.bind(this);
 
-            reader.onerror = function () {
-                alert("Reading error!\n" + reader.error);
-            };
-            reader.readAsText(file);
-            //console.log(reader.result);
-        }
+        reader.onerror = function () {
+            alert("Reading error!\n" + reader.error);
+        };
+
+        reader.readAsText(file);
     };
-
-    saveData(reader) {
-        console.log(reader.result);
-        let text = reader.result;
-        let items = JSON.parse(text);
-        //this.handleClear();
-        for (let item of items) {
-            //mdpdata.push(item);
-        }
-    }
 
     render() {
         return (
@@ -185,7 +162,7 @@ export default class MdpData extends React.Component {
                         <button className="load-btn" onClick={this.handleDownload}>Download</button>
                         <button className="load-btn" onClick={this.clickForUpload}>
                             Upload
-                            <input id="upload" type="file" onChange={this.handleUpload}/>
+                            <input id="upload" type="file" accept=".txt" onChange={this.handleUpload}/>
                         </button>
                     </div>
                 </div>
