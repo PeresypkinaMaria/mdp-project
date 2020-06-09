@@ -1,13 +1,20 @@
 import React from 'react';
 import MdpTable from "./MdpTable";
 import "./MdpData.css";
+let img_state = require('./images/state_value.png');
+let img_action = require('./images/action.png');
+let img_optimal = require('./images/optimal.png');
+let img_from_state = require('./images/from_state.png');
+let img_to_state = require('./images/to_state.png');
 
 export default class MdpData extends React.Component {
     constructor(props) {
         super(props);
 
-        this.handleChangeInitState = this.handleChangeInitState.bind(this);
+        //this.handleChangeInitState = this.handleChangeInitState.bind(this);
         this.handleChangeGamma = this.handleChangeGamma.bind(this);
+        this.handleIterMethodChange = this.handleIterMethodChange.bind(this);
+        this.handleVisualMethodChange = this.handleVisualMethodChange.bind(this);
         this.handleClear = this.handleClear.bind(this);
         this.handleDownload = this.handleDownload.bind(this);
         this.clickForUpload = this.clickForUpload.bind(this);
@@ -15,8 +22,10 @@ export default class MdpData extends React.Component {
 
         this.state = {};
         this.state.mdpdata = [{id: generateID(), from_state: '', action: '', to_state: '', probability: 0, reward: ''}];
-        this.state.init_state = '';
+        //this.state.init_state = '';
         this.state.gamma = 0.9;
+        this.state.iterMethod = 'value';
+        this.state.visualMethod = 'circle';
         //this.state.file = null;
     }
 
@@ -59,9 +68,11 @@ export default class MdpData extends React.Component {
         this.setState({mdpdata: newArr});
     };
 
+    /*
     handleChangeInitState(event) {
         this.setState({init_state: event.target.value});
     };
+     */
 
     handleChangeGamma(event) {
         if (event.target.value < 0 || event.target.value > 1) {
@@ -70,6 +81,14 @@ export default class MdpData extends React.Component {
             this.setState({gamma: event.target.value});
         }
     };
+
+    handleIterMethodChange(event){
+        this.setState({iterMethod: event.target.value});
+    }
+
+    handleVisualMethodChange(event){
+        this.setState({visualMethod: event.target.value});
+    }
 
     handleClear() {
         this.setState({
@@ -82,7 +101,7 @@ export default class MdpData extends React.Component {
                 reward: ''
             }]
         });
-        this.setState({init_state: ''});
+        //this.setState({init_state: ''});
         this.setState({gamma: 0.9});
         this.props.clear(true);
     };
@@ -135,35 +154,94 @@ export default class MdpData extends React.Component {
                         mdpData={this.state.mdpdata}/>
                 </div>
                 <div className="optional">
-                    <div>
-                        <div className="init-data">
-                            <label>
-                                Initial state
-                                <input type="text" name="init_state" value={this.state.init_state}
-                                       onChange={this.handleChangeInitState}/>
-                            </label>
-                        </div>
-                        <div className="init-data">
-                            <label>
-                                Gamma
-                                <input type="number" name="gamma" min="0" max="1" step="0.1" value={this.state.gamma}
-                                       onChange={this.handleChangeGamma}/>
-                            </label>
-                        </div>
+                    <div className="init-data">
+                        <label>
+                            Gamma
+                            <input type="number" name="gamma" min="0" max="1" step="0.1" value={this.state.gamma}
+                                   onChange={this.handleChangeGamma}/>
+                        </label>
                     </div>
-                    <div>
+                    <div className="radio-choice">
+                        Iteration method:
+                        <p>
+                            <label>
+                            <input type="radio" name="valueIter" value="value"
+                                   checked={this.state.iterMethod === 'value'}
+                                   onChange={this.handleIterMethodChange}/>
+                                   Iterative policy evaluation
+                            </label>
+                        </p>
+                        <p>
+                            <label>
+                            <input type="radio" name="policyIter" value="policy"
+                                   checked={this.state.iterMethod === 'policy'}
+                                   onChange={this.handleIterMethodChange}/>
+                                Policy iteration
+                            </label>
+                        </p>
+                    </div>
+                    <div className="radio-choice">
+                        Graph visualization method
+                        <p>
+                            <label>
+                                <input type="radio" name="circle" value="circle"
+                                       checked={this.state.visualMethod === 'circle'}
+                                       onChange={this.handleVisualMethodChange}/>
+                                       Circle
+                            </label>
+                        </p>
+                        <p>
+                            <label>
+                                <input type="radio" name="grid" value="grid"
+                                       checked={this.state.visualMethod === 'grid'}
+                                       onChange={this.handleVisualMethodChange}/>
+                                Grid
+                            </label>
+                        </p>
+                        <p>
+                            <label>
+                                <input type="radio" name="random" value="random"
+                                       checked={this.state.visualMethod === 'random'}
+                                       onChange={this.handleVisualMethodChange}/>
+                                Random
+                            </label>
+                        </p>
+                    </div>
+                    <div className="buttons">
                         <button className="green-btn"
-                                onClick={() => this.props.updateData(this.state.mdpdata, this.state.init_state, this.state.gamma)}>Create
-                            graph
+                                onClick={() => this.props.updateData(this.state.mdpdata, this.state.gamma,
+                                    this.state.iterMethod, this.state.visualMethod)}>
+                            Create graph
                         </button>
                         <button className="red-btn" onClick={this.handleClear}>Clear</button>
-                    </div>
-                    <div>
                         <button className="load-btn" onClick={this.handleDownload}>Download</button>
                         <button className="load-btn" onClick={this.clickForUpload}>
                             Upload
                             <input id="upload" type="file" accept=".txt" onChange={this.handleUpload}/>
                         </button>
+                    </div>
+                    <hr/>
+                    <div className="graph-info">
+                        <div className="info-item">
+                            <img src={img_state} alt="State"/>
+                            <div className="info-text">- state with its value</div>
+                        </div>
+                        <div className="info-item">
+                            <img src={img_action} alt="Action"/>
+                            <div className="info-text">- action</div>
+                        </div>
+                        <div className="info-item">
+                            <img src={img_optimal} alt="Optimal"/>
+                            <div className="info-text">- optimal policy for this state</div>
+                        </div>
+                        <div className="info-item">
+                            <img src={img_from_state} alt="From_state"/>
+                            <div className="info-text">- line from state to its action</div>
+                        </div>
+                        <div className="info-item">
+                            <img src={img_to_state} alt="To_state"/>
+                            <div className="info-text">- line from action to next state</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -175,13 +253,12 @@ function generateID() {
     return Math.random().toString(36).substr(2, 6);
 }
 
-/*function mdpToString(mdp, init_state, gamma) {
-    let result = '';
-    for (let item of mdp){
-        result += 'id: ' + item.id + ', from_state: ' + item.from_state + ', action: ' + item.action + ', to_state: ' +
-            item.to_state + ', probability: ' + item.probability + ', reward: ' + item.reward + '\n';
-    };
-    result += 'initial_state: ' + init_state + '\n';
-    result += 'gamma: ' + gamma;
-    return result;
-}*/
+/* INITIAL STATE
+<div className="init-data">
+    <label>
+        Initial state
+        <input type="text" name="init_state" value={this.state.init_state}
+               onChange={this.handleChangeInitState}/>
+    </label>
+</div>
+*/

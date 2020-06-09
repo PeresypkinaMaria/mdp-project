@@ -29,7 +29,7 @@ export default class MdpTable extends React.Component{
                     </thead>
                     <tbody>{mdpItem}</tbody>
                 </table>
-                <button className="green-btn" onClick={this.props.onAddRow}>Add row</button>
+                <button className="green-btn add-row" onClick={this.props.onAddRow}>Add row</button>
             </div>
         );
     }

@@ -1,10 +1,13 @@
 import MdpStructure from './MdpStructure.js';
 
 export default class MdpLogic {
-    constructor(data, init_state, gamma) {
-        this.mdp = new MdpStructure(data, init_state);
+    constructor(data, gamma) {
+        this.mdp = new MdpStructure(data);
         this.gamma = gamma;
-        this.stateValues = [];
+        this.stateValues = new Map();
+        for (let state of this.mdp.getAllStates()) {
+            this.stateValues.set(state, 0);
+        }
         //this.optimalActions = this.getOptimalActions();
     };
 
@@ -43,12 +46,13 @@ export default class MdpLogic {
     iterativePolicyEvaluation(){
         let num_iter = 100;
         let min_diff = 0.001;
-        let state_values = new Map();
+        //let state_values = new Map();
 
         //инициализация
-        for (let state of this.mdp.getAllStates()){
+        let state_values = this.stateValues;
+        /*for (let state of this.mdp.getAllStates()){
             state_values.set(state, 0);
-        }
+        }*/
 
         for (let i = 0; i < num_iter; i++){
             let new_state_values = new Map();
@@ -101,16 +105,37 @@ export default class MdpLogic {
     };
 
     getOptimalActions(){
-        this.iterativePolicyEvaluation();
         let actions = new Map();
         for (let state of this.mdp.getAllStates()){
             if (!(this.mdp.isTerminal(state))){
                 let act = this.getOptimalAction(state);
                 actions.set(state, act);
             }
-
         }
         return actions;
+    };
+
+    valueIteration(){
+        this.iterativePolicyEvaluation();
+        return this.getOptimalActions();
+    }
+
+    policyIteration(){
+        this.iterativePolicyEvaluation();
+        let old_actions = this.getOptimalActions();
+        let policy_stable = false;
+        while (!policy_stable){
+            this.iterativePolicyEvaluation();
+            let new_actions = this.getOptimalActions();
+            policy_stable = true;
+            for (let state of this.mdp.getAllStates()){
+                if (old_actions.get(state) !== new_actions.get(state)){
+                    policy_stable = false;
+                }
+            }
+            old_actions = new_actions;
+        }
+        return old_actions;
     };
 
     checkData(){

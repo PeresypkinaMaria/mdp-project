@@ -12,10 +12,10 @@ export default class BuildGraph extends React.Component{
         this.state.graph = null;
     }
 
-    updateData = (arr, init_state, g) => {
-        let mdpLogic = new MdpLogic(arr, init_state, g);
+    updateData = (arr, g, iter_method, visual_method) => {
+        let mdpLogic = new MdpLogic(arr, g);
         if (mdpLogic.checkData() === true) {
-            let my_graph = new MyGraph(mdpLogic);
+            let my_graph = new MyGraph(mdpLogic, iter_method, visual_method);
             my_graph.createGraph();
             this.setState({graph: my_graph});
         }else{
@@ -39,7 +39,7 @@ export default class BuildGraph extends React.Component{
                              clear={this.clear}>
                     </MdpData>
                 </div>
-                    <div id="cy"></div>
+                <div id="cy"></div>
             </div>
         )
     }

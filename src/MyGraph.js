@@ -1,8 +1,10 @@
 import cytoscape from 'cytoscape';
 
 export default class MyGraph {
-    constructor(mdpLogic) {
+    constructor(mdpLogic, iter_method, visual_method) {
         this.mdpLogic = mdpLogic;
+        this.iterMethod = iter_method;
+        this.visualMethod = visual_method;
         //this.optimalActions = this.mdpLogic.getOptimalActions();
     }
 
@@ -16,24 +18,26 @@ export default class MyGraph {
                         shape: 'ellipse',
                         label: 'data(name)',
                         'text-halign': 'center',
-                        'text-valign': 'center'
+                        'text-valign': 'center',
+                        'text-wrap': 'wrap'
                     }
                 },
                 {
                     selector: '.states',
                     style: {
                         'background-color': '#a5ff92',
-                        width: '70px',
-                        height: '70px',
-                        'font-size': '30px'
+                        width: '120px',
+                        height: '120px',
+                        'font-size': '26px',
+                        'text-max-width': '10px'
                     },
                 },
                 {
                     selector: '.actions',
                     style: {
                         'background-color': '#ffa59d',
-                        width: '40px',
-                        height: '40px',
+                        width: '80px',
+                        height: '80px',
                         'font-size': '20px'
                     }
                 },
@@ -81,11 +85,11 @@ export default class MyGraph {
                 }],
             //zoom: 1,
             userZoomingEnabled: true, //увеличение или уменьшение графа
-            //minZoom:
-            userPanningEnabled: false //перемещение всего графа
+            userPanningEnabled: true //перемещение всего графа
         });
 
-        let optimalActions = this.mdpLogic.getOptimalActions();
+        let optimalActions = (this.iterMethod === 'value')? this.mdpLogic.valueIteration() : this.mdpLogic.policyIteration();
+
         let i = 0;
         let j = 0;
         let created_nodes = [];
@@ -93,7 +97,7 @@ export default class MyGraph {
             if (!(created_nodes.includes(state))) {
                 cy.add({
                     group: 'nodes',
-                    data: {id: state, name: state},
+                    data: {id: state, name: state + ' ' + this.mdpLogic.stateValues.get(state).toFixed(2)},
                     classes: 'states'
                 });
                 created_nodes.push(state);
@@ -123,7 +127,7 @@ export default class MyGraph {
                     if (!(created_nodes.includes(ns))) {
                         cy.add({
                             group: 'nodes',
-                            data: {id: ns, name: ns},
+                            data: {id: ns, name: ns + ' ' + this.mdpLogic.stateValues.get(ns).toFixed(2)},
                             classes: 'states'
                         });
                         created_nodes.push(ns);
@@ -142,7 +146,23 @@ export default class MyGraph {
             }
         }
         this.graph = cy;
-        let layout = cy.layout({name:'circle'});
+        cy.minZoom(0.2);
+        cy.maxZoom(1);
+        cy.fit();
+        let layout;
+        switch (this.visualMethod) {
+            case 'circle':
+                layout = cy.layout({name: 'circle'});
+                break;
+            case 'grid':
+                layout = cy.layout({name: 'grid'});
+                break;
+            case 'random':
+                layout = cy.layout({name: 'random'});
+                break;
+            default:
+                layout = cy.layout({name: 'circle'});
+        }
         //cy.center();
         layout.run();
     }

@@ -1,9 +1,9 @@
 export default class MdpStructure {
-    constructor(data, init_state) {
+    constructor(data) {
         //тут проверка transition_probs
         this.transition_probs = createTransitionProbs(data);
         this.rewards = createRewards(data);
-        this.initial_state = init_state;
+        //this.initial_state = init_state;
         this.n_states = this.transition_probs.size;
     }
 
