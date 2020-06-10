@@ -19,6 +19,7 @@ export default class MdpData extends React.Component {
         this.handleDownload = this.handleDownload.bind(this);
         this.clickForUpload = this.clickForUpload.bind(this);
         this.handleUpload = this.handleUpload.bind(this);
+        this.handleChangeOnlyOptimal = this.handleChangeOnlyOptimal.bind(this);
 
         this.state = {};
         this.state.mdpdata = [{id: generateID(), from_state: '', action: '', to_state: '', probability: 0, reward: ''}];
@@ -26,6 +27,7 @@ export default class MdpData extends React.Component {
         this.state.gamma = 0.9;
         this.state.iterMethod = 'value';
         this.state.visualMethod = 'circle';
+        this.state.onlyOptimal = false;
         //this.state.file = null;
     }
 
@@ -81,6 +83,10 @@ export default class MdpData extends React.Component {
             this.setState({gamma: event.target.value});
         }
     };
+
+    handleChangeOnlyOptimal(event){
+        this.setState({onlyOptimal: event.target.value});
+    }
 
     handleIterMethodChange(event){
         this.setState({iterMethod: event.target.value});
@@ -157,8 +163,14 @@ export default class MdpData extends React.Component {
                     <div className="init-data">
                         <label>
                             Gamma
-                            <input type="number" name="gamma" min="0" max="1" step="0.1" value={this.state.gamma}
+                            <input type="number" name="gamma" className="gamma" min="0" max="1" step="0.1" value={this.state.gamma}
                                    onChange={this.handleChangeGamma}/>
+                        </label>
+                        <label className="only-opt">
+                            <input type="checkbox" name="only_optimal"
+                                   checked={this.state.onlyOptima}
+                                   onChange={this.handleChangeOnlyOptimal}/>
+                            Display only optimal actions
                         </label>
                     </div>
                     <div className="radio-choice">
@@ -210,7 +222,7 @@ export default class MdpData extends React.Component {
                     <div className="buttons">
                         <button className="green-btn"
                                 onClick={() => this.props.updateData(this.state.mdpdata, this.state.gamma,
-                                    this.state.iterMethod, this.state.visualMethod)}>
+                                    this.state.iterMethod, this.state.visualMethod, this.state.onlyOptimal)}>
                             Create graph
                         </button>
                         <button className="red-btn" onClick={this.handleClear}>Clear</button>
@@ -232,7 +244,7 @@ export default class MdpData extends React.Component {
                         </div>
                         <div className="info-item">
                             <img src={img_optimal} alt="Optimal"/>
-                            <div className="info-text">- optimal policy for this state</div>
+                            <div className="info-text">- optimal action for this state</div>
                         </div>
                         <div className="info-item">
                             <img src={img_from_state} alt="From_state"/>

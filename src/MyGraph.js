@@ -1,15 +1,16 @@
 import cytoscape from 'cytoscape';
 
 export default class MyGraph {
-    constructor(mdpLogic, iter_method, visual_method) {
+    constructor(mdpLogic, iter_method, visual_method, only_opt) {
         this.mdpLogic = mdpLogic;
         this.iterMethod = iter_method;
         this.visualMethod = visual_method;
+        this.onlyOptimal = only_opt;
         //this.optimalActions = this.mdpLogic.getOptimalActions();
     }
 
     createGraph(){
-        var cy = cytoscape({
+        let cy = cytoscape({
             container: document.getElementById('cy'),
             style: [
                 {
@@ -90,6 +91,100 @@ export default class MyGraph {
 
         let optimalActions = (this.iterMethod === 'value')? this.mdpLogic.valueIteration() : this.mdpLogic.policyIteration();
 
+        if (this.onlyOptimal){
+            cy = this.createOnlyOptimalGraph(cy, optimalActions);
+        } else {
+            cy = this.createFullGraph(cy, optimalActions);
+        }
+
+        this.graph = cy;
+        cy.minZoom(0.2);
+        cy.maxZoom(1);
+        cy.fit();
+        let layout;
+        switch (this.visualMethod) {
+            case 'circle':
+                layout = cy.layout({name: 'circle'});
+                break;
+            case 'grid':
+                layout = cy.layout({name: 'grid'});
+                break;
+            case 'random':
+                layout = cy.layout({name: 'random'});
+                break;
+            default:
+                layout = cy.layout({name: 'circle'});
+        }
+
+        layout.run();
+    };
+
+    createOnlyOptimalGraph(cyt, opt_act){
+        let cy = cyt;
+        let optimalActions = opt_act;
+        let i = 0;
+        let j = 0;
+        let created_nodes = [];
+        for (let state of this.mdpLogic.mdp.getAllStates()) {
+            if (!(created_nodes.includes(state))) {
+                cy.add({
+                    group: 'nodes',
+                    data: {id: state, name: state + ' ' + this.mdpLogic.stateValues.get(state).toFixed(2)},
+                    classes: 'states'
+                });
+                created_nodes.push(state);
+            }
+            for (let action of this.mdpLogic.mdp.getPossibleActions(state)) {
+                if (optimalActions.get(state) === action) {
+                    let new_act = action + j;
+                    cy.add({
+                        group: 'nodes',
+                        data: {id: new_act, name: action},
+                        classes: 'actions',
+                        parent: state
+                    });
+                    j++;
+
+                    let cl = 'from_state';
+                    if (optimalActions.has(state) && optimalActions.get(state) === action) {
+                        cl = 'optimal'
+                    }
+                    let s_to_a = state + action;
+                    cy.add({
+                        group: 'edges',
+                        data: {id: s_to_a, source: state, target: new_act},
+                        classes: cl
+                    });
+                    let next_states = this.mdpLogic.mdp.getNextStates(state, action);
+                    for (let ns of next_states) {
+                        if (!(created_nodes.includes(ns))) {
+                            cy.add({
+                                group: 'nodes',
+                                data: {id: ns, name: ns + ' ' + this.mdpLogic.stateValues.get(ns).toFixed(2)},
+                                classes: 'states'
+                            });
+                            created_nodes.push(ns);
+                        }
+                        let a_to_s = action + ns + i;
+                        i++;
+                        let prob = 'P: ' + this.mdpLogic.mdp.getTransitionProb(state, action, ns);
+                        let reward = '; R: ' + this.mdpLogic.mdp.getReward(state, action, ns);
+                        let edge_name = (this.mdpLogic.mdp.getReward(state, action, ns) === 0) ? prob : prob + reward;
+                        cy.add({
+                            group: 'edges',
+                            data: {id: a_to_s, name: edge_name, source: new_act, target: ns, label: prob},
+                            classes: 'to_state'
+                        });
+                    }
+                }
+            }
+        }
+        return cy;
+    }
+
+    createFullGraph(cyt, opt_act){
+        let cy = cyt;
+        let optimalActions = opt_act;
         let i = 0;
         let j = 0;
         let created_nodes = [];
@@ -145,31 +240,12 @@ export default class MyGraph {
                 }
             }
         }
-        this.graph = cy;
-        cy.minZoom(0.2);
-        cy.maxZoom(1);
-        cy.fit();
-        let layout;
-        switch (this.visualMethod) {
-            case 'circle':
-                layout = cy.layout({name: 'circle'});
-                break;
-            case 'grid':
-                layout = cy.layout({name: 'grid'});
-                break;
-            case 'random':
-                layout = cy.layout({name: 'random'});
-                break;
-            default:
-                layout = cy.layout({name: 'circle'});
-        }
-        //cy.center();
-        layout.run();
-    }
+        return cy;
+    };
 
     destroyGraph(){
         this.graph.destroy();
-    }
+    };
 
     /*checkOptimal(state, action){
         return this.optimalActions.has(state) && this.optimalActions.get(state) === action;
