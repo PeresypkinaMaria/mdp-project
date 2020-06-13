@@ -5,7 +5,6 @@
 .mtable{
     border: 3px solid #FFCC66;
     border-radius: 5px;
-    /*position: absolute;*/
     float: left;
     width: 66.5%;
     margin-left: 1%;
@@ -14,7 +13,6 @@
 .optional{
     border: 3px solid #FFCC66;
     border-radius: 5px;
-    /*float: right;*/
     position: fixed;
     left: 69%;
     width: 30%;
@@ -42,7 +40,7 @@
 
 /*radio buttons*/
 .radio-choice{
-    margin: 20px 10px;
+    margin: 30px 10px;
 }
 
 .radio-choice p{
@@ -75,13 +73,10 @@ button{
 }
 
 .green-btn{
-    /*background-color: rgb(0, 204, 51);*/
     border-color: #4CAF50;
 }
 
 .green-btn:hover{
-    /*box-shadow: 5px 5px 10px 0 rgba(0,0,0,0.24);*/
-    /*background-color: green;*/
     background-color: #4CAF50;
 }
 
@@ -131,11 +126,11 @@ img{
 }
 
 .info-item:first-child{
-    margin-top: 10px;
+    margin-top: 30px;
 }
 
 .info-item{
-    margin-top: 30px;
+    margin-top: 40px;
     margin-left: 20px;
     display: inline-flex;
 }

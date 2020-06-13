@@ -1,7 +1,7 @@
 import React from 'react';
-import './MdpTable.css';
+import './css/TableComponent.css';
 
-export default class MdpTable extends React.Component{
+export default class TableComponent extends React.Component{
     render() {
         let onDataTableUpdate = this.props.onDataTableUpdate;
         let removeRow = this.props.onRemoveRow;
@@ -117,18 +117,3 @@ class EditableNumberCell extends React.Component{
         );
     }
 }
-
-/*function checkInput(type, key, value) {
-    if (type === "from_state" || type === "action" || type === "to_state"){
-        return true;
-    }
-    if (type === "probability"){
-        if ((value.length == 0 && ((key >= '2' && key <= '9') || key == '.' || key == ','))
-            || (value.length == 1 && (key >= '0' && key <= '9'))
-            || (value.length >= 2 && (key == '.' || key == ','))
-            || (key == 'e')){
-            return false;
-        }
-    }
-    return false;
-}*/

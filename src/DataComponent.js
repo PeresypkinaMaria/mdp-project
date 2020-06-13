@@ -1,19 +1,17 @@
 import React from 'react';
-import MdpTable from "./MdpTable";
-import "./MdpData.css";
+import TableComponent from "./TableComponent";
+import "./css/DataComponent.css";
 let img_state = require('./images/state_value.png');
 let img_action = require('./images/action.png');
 let img_optimal = require('./images/optimal.png');
 let img_from_state = require('./images/from_state.png');
 let img_to_state = require('./images/to_state.png');
 
-export default class MdpData extends React.Component {
+export default class DataComponent extends React.Component {
     constructor(props) {
         super(props);
 
-        //this.handleChangeInitState = this.handleChangeInitState.bind(this);
         this.handleChangeGamma = this.handleChangeGamma.bind(this);
-        this.handleIterMethodChange = this.handleIterMethodChange.bind(this);
         this.handleVisualMethodChange = this.handleVisualMethodChange.bind(this);
         this.handleClear = this.handleClear.bind(this);
         this.handleDownload = this.handleDownload.bind(this);
@@ -23,15 +21,10 @@ export default class MdpData extends React.Component {
 
         this.state = {};
         this.state.mdpdata = [{id: generateID(), from_state: '', action: '', to_state: '', probability: 0, reward: ''}];
-        //this.state.init_state = '';
         this.state.gamma = 0.9;
-        this.state.iterMethod = 'value';
         this.state.visualMethod = 'circle';
         this.state.onlyOptimal = false;
-        //this.state.file = null;
     }
-
-    //dataFromTable = this.state.mdpdata;
 
     handleRemoveRow(dataRow) {
         let index = this.state.mdpdata.indexOf(dataRow);
@@ -70,12 +63,6 @@ export default class MdpData extends React.Component {
         this.setState({mdpdata: newArr});
     };
 
-    /*
-    handleChangeInitState(event) {
-        this.setState({init_state: event.target.value});
-    };
-     */
-
     handleChangeGamma(event) {
         if (event.target.value < 0 || event.target.value > 1) {
             alert("Please enter a number from 0 to 1!")
@@ -85,16 +72,12 @@ export default class MdpData extends React.Component {
     };
 
     handleChangeOnlyOptimal(event){
-        this.setState({onlyOptimal: event.target.value});
-    }
-
-    handleIterMethodChange(event){
-        this.setState({iterMethod: event.target.value});
-    }
+        this.setState({onlyOptimal: event.target.checked});
+    };
 
     handleVisualMethodChange(event){
         this.setState({visualMethod: event.target.value});
-    }
+    };
 
     handleClear() {
         this.setState({
@@ -136,9 +119,6 @@ export default class MdpData extends React.Component {
             let text = reader.result;
             let items = JSON.parse(text);
             this.handleClear();
-            /*for (let item of items) {
-                this.state.mdpdata.push(item);
-            }*/
             this.setState({mdpdata: items});
         }.bind(this);
 
@@ -153,7 +133,7 @@ export default class MdpData extends React.Component {
         return (
             <div className="data">
                 <div className="mtable">
-                    <MdpTable
+                    <TableComponent
                         onDataTableUpdate={this.handleDataTable.bind(this)}
                         onAddRow={this.handleAddRow.bind(this)}
                         onRemoveRow={this.handleRemoveRow.bind(this)}
@@ -168,29 +148,10 @@ export default class MdpData extends React.Component {
                         </label>
                         <label className="only-opt">
                             <input type="checkbox" name="only_optimal"
-                                   checked={this.state.onlyOptima}
+                                   checked={this.state.onlyOptimal}
                                    onChange={this.handleChangeOnlyOptimal}/>
                             Display only optimal actions
                         </label>
-                    </div>
-                    <div className="radio-choice">
-                        Iteration method:
-                        <p>
-                            <label>
-                            <input type="radio" name="valueIter" value="value"
-                                   checked={this.state.iterMethod === 'value'}
-                                   onChange={this.handleIterMethodChange}/>
-                                   Iterative policy evaluation
-                            </label>
-                        </p>
-                        <p>
-                            <label>
-                            <input type="radio" name="policyIter" value="policy"
-                                   checked={this.state.iterMethod === 'policy'}
-                                   onChange={this.handleIterMethodChange}/>
-                                Policy iteration
-                            </label>
-                        </p>
                     </div>
                     <div className="radio-choice">
                         Graph visualization method
@@ -222,7 +183,7 @@ export default class MdpData extends React.Component {
                     <div className="buttons">
                         <button className="green-btn"
                                 onClick={() => this.props.updateData(this.state.mdpdata, this.state.gamma,
-                                    this.state.iterMethod, this.state.visualMethod, this.state.onlyOptimal)}>
+                                    this.state.visualMethod, this.state.onlyOptimal)}>
                             Create graph
                         </button>
                         <button className="red-btn" onClick={this.handleClear}>Clear</button>
@@ -264,13 +225,3 @@ export default class MdpData extends React.Component {
 function generateID() {
     return Math.random().toString(36).substr(2, 6);
 }
-
-/* INITIAL STATE
-<div className="init-data">
-    <label>
-        Initial state
-        <input type="text" name="init_state" value={this.state.init_state}
-               onChange={this.handleChangeInitState}/>
-    </label>
-</div>
-*/

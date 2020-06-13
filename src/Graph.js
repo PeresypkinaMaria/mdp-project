@@ -1,12 +1,10 @@
 import cytoscape from 'cytoscape';
 
-export default class MyGraph {
-    constructor(mdpLogic, iter_method, visual_method, only_opt) {
+export default class Graph {
+    constructor(mdpLogic, visual_method, only_opt) {
         this.mdpLogic = mdpLogic;
-        this.iterMethod = iter_method;
         this.visualMethod = visual_method;
         this.onlyOptimal = only_opt;
-        //this.optimalActions = this.mdpLogic.getOptimalActions();
     }
 
     createGraph(){
@@ -84,12 +82,11 @@ export default class MyGraph {
                         'target-arrow-color': '#66FF66'
                     }
                 }],
-            //zoom: 1,
             userZoomingEnabled: true, //увеличение или уменьшение графа
             userPanningEnabled: true //перемещение всего графа
         });
 
-        let optimalActions = (this.iterMethod === 'value')? this.mdpLogic.valueIteration() : this.mdpLogic.policyIteration();
+        let optimalActions = this.mdpLogic.valueIteration();
 
         if (this.onlyOptimal){
             cy = this.createOnlyOptimalGraph(cy, optimalActions);
@@ -135,7 +132,7 @@ export default class MyGraph {
                 created_nodes.push(state);
             }
             for (let action of this.mdpLogic.mdp.getPossibleActions(state)) {
-                if (optimalActions.get(state) === action) {
+                if (this.checkOptimal(state, action, optimalActions)) {
                     let new_act = action + j;
                     cy.add({
                         group: 'nodes',
@@ -146,7 +143,7 @@ export default class MyGraph {
                     j++;
 
                     let cl = 'from_state';
-                    if (optimalActions.has(state) && optimalActions.get(state) === action) {
+                    if (optimalActions.has(state) && this.checkOptimal(state, action, optimalActions)) {
                         cl = 'optimal'
                     }
                     let s_to_a = state + action;
@@ -180,6 +177,16 @@ export default class MyGraph {
             }
         }
         return cy;
+    };
+
+    checkOptimal(state, action, optimal_actions){
+        let actions = optimal_actions.get(state);
+        for (let i = 0; i < actions.length; i++){
+            if (actions[i] === action){
+                return true;
+            }
+        }
+        return false;
     }
 
     createFullGraph(cyt, opt_act){
@@ -208,7 +215,7 @@ export default class MyGraph {
                 j++;
 
                 let cl = 'from_state';
-                if (optimalActions.has(state) && optimalActions.get(state) === action){
+                if (this.checkOptimal(state, action, optimalActions)){
                     cl = 'optimal'
                 }
                 let s_to_a = state + action;
@@ -246,27 +253,4 @@ export default class MyGraph {
     destroyGraph(){
         this.graph.destroy();
     };
-
-    /*checkOptimal(state, action){
-        return this.optimalActions.has(state) && this.optimalActions.get(state) === action;
-    }*/
 }
-
-/*var g_data = [
-    {from_state: 's0', action: 'a0', to_state: 's0', probability: 0.5, reward: 0},
-    {from_state: 's0', action: 'a0', to_state: 's2', probability: 0.5, reward: 0},
-    {from_state: 's0', action: 'a1', to_state: 's2', probability: 1, reward: 0},
-    {from_state: 's1', action: 'a0', to_state: 's0', probability: 0.7, reward: 5},
-    {from_state: 's1', action: 'a0', to_state: 's1', probability: 0.1, reward: 0},
-    {from_state: 's1', action: 'a0', to_state: 's2', probability: 0.2, reward: 0},
-    {from_state: 's1', action: 'a1', to_state: 's1', probability: 0.95, reward: 0},
-    {from_state: 's1', action: 'a1', to_state: 's2', probability: 0.05, reward: 0},
-    {from_state: 's2', action: 'a0', to_state: 's0', probability: 0.4, reward: 0},
-    {from_state: 's2', action: 'a0', to_state: 's2', probability: 0.6, reward: 0},
-    {from_state: 's2', action: 'a1', to_state: 's0', probability: 0.3, reward: -1},
-    {from_state: 's2', action: 'a1', to_state: 's1', probability: 0.3, reward: 0},
-    {from_state: 's2', action: 'a1', to_state: 's2', probability: 0.4, reward: 0},
-];
-
-var my_g = new MyGraph(g_data, 's0', 0.9);
-my_g.createGraph();*/

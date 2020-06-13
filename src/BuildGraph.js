@@ -1,8 +1,8 @@
 import React from 'react';
-import MdpData from "./MdpData.js";
+import DataComponent from "./DataComponent.js";
 import MdpLogic from "./MdpLogic.js";
-import MyGraph from "./MyGraph.js";
-import "./BuildGraph.css"
+import Graph from "./Graph.js";
+import "./css/BuildGraph.css"
 
 export default class BuildGraph extends React.Component{
     constructor(props) {
@@ -12,10 +12,10 @@ export default class BuildGraph extends React.Component{
         this.state.graph = null;
     }
 
-    updateData = (arr, g, iter_method, visual_method, only_opt) => {
+    updateData = (arr, g, visual_method, only_opt) => {
         let mdpLogic = new MdpLogic(arr, g);
         if (mdpLogic.checkData() === true) {
-            let my_graph = new MyGraph(mdpLogic, iter_method, visual_method, only_opt);
+            let my_graph = new Graph(mdpLogic, visual_method, only_opt);
             my_graph.createGraph();
             this.setState({graph: my_graph});
         }else{
@@ -34,10 +34,10 @@ export default class BuildGraph extends React.Component{
         return(
             <div>
                 <div>
-                    <MdpData id="table"
+                    <DataComponent id="table"
                              updateData={this.updateData}
                              clear={this.clear}>
-                    </MdpData>
+                    </DataComponent>
                 </div>
                 <div id="cy"></div>
             </div>

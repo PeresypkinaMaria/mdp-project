@@ -1,9 +1,7 @@
 export default class MdpStructure {
     constructor(data) {
-        //тут проверка transition_probs
         this.transition_probs = createTransitionProbs(data);
         this.rewards = createRewards(data);
-        //this.initial_state = init_state;
         this.n_states = this.transition_probs.size;
     }
 
@@ -17,7 +15,6 @@ export default class MdpStructure {
 
     //проверка, является ли state конечным
     isTerminal(state) {
-        //return this.getPossibleActions(state).size === 0;
         return this.transition_probs.get(state).size === 0;
     }
 
@@ -44,9 +41,6 @@ export default class MdpStructure {
         }
         return false;
     }
-
-    reset() {
-    } //??
 }
 
 function createTransitionProbs(mdp_data) {
