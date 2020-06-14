@@ -3,12 +3,12 @@ import './css/TableComponent.css';
 
 export default class TableComponent extends React.Component{
     render() {
-        let onDataTableUpdate = this.props.onDataTableUpdate;
+        let onDataUpdate = this.props.onDataUpdate;
         let removeRow = this.props.onRemoveRow;
         let mdpItem = this.props.mdpData.map(function (mdpItem) {
             return (
                 <DataRow
-                    onDataTableUpdate={onDataTableUpdate}
+                    onDataUpdate={onDataUpdate}
                     mdpItem={mdpItem}
                     onRemoveEvent={removeRow.bind(this)}
                     key={mdpItem.id}/>)
@@ -43,36 +43,36 @@ class DataRow extends React.Component{
     render() {
         return(
             <tr>
-                <EditableCell
-                    onDataTableUpdate={this.props.onDataTableUpdate}
+                <EditableTextCell
+                    onDataUpdate={this.props.onDataUpdate}
                     cellData={{
                         "type": "from_state",
                         value: this.props.mdpItem.from_state,
                         id: this.props.mdpItem.id}}
                 />
-                <EditableCell
-                    onDataTableUpdate={this.props.onDataTableUpdate}
+                <EditableTextCell
+                    onDataUpdate={this.props.onDataUpdate}
                     cellData={{
                         "type": "action",
                         value: this.props.mdpItem.action,
                         id: this.props.mdpItem.id}}
                 />
-                <EditableCell
-                    onDataTableUpdate={this.props.onDataTableUpdate}
+                <EditableTextCell
+                    onDataUpdate={this.props.onDataUpdate}
                     cellData={{
                         "type": "to_state",
                         value: this.props.mdpItem.to_state,
                         id: this.props.mdpItem.id}}
                 />
                 <EditableNumberCell
-                    onDataTableUpdate={this.props.onDataTableUpdate}
+                    onDataUpdate={this.props.onDataUpdate}
                     cellData={{
                         "type": "probability",
                         value: this.props.mdpItem.probability,
                         id: this.props.mdpItem.id}}
                 />
-                <EditableCell
-                    onDataTableUpdate={this.props.onDataTableUpdate}
+                <EditableTextCell
+                    onDataUpdate={this.props.onDataUpdate}
                     cellData={{
                         "type": "reward",
                         value: this.props.mdpItem.reward,
@@ -86,7 +86,7 @@ class DataRow extends React.Component{
     }
 }
 
-class EditableCell extends React.Component{
+class EditableTextCell extends React.Component{
     render() {
         return(
             <td>
@@ -95,7 +95,7 @@ class EditableCell extends React.Component{
                     name={this.props.cellData.type}
                     id={this.props.cellData.id}
                     value={this.props.cellData.value}
-                    onChange={this.props.onDataTableUpdate}/>
+                    onChange={this.props.onDataUpdate}/>
             </td>
         );
     }
@@ -112,7 +112,7 @@ class EditableNumberCell extends React.Component{
                     name={this.props.cellData.type}
                     id={this.props.cellData.id}
                     value={this.props.cellData.value}
-                    onChange={this.props.onDataTableUpdate}/>
+                    onChange={this.props.onDataUpdate}/>
             </td>
         );
     }

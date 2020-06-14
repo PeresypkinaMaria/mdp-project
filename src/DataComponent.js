@@ -134,7 +134,7 @@ export default class DataComponent extends React.Component {
             <div className="data">
                 <div className="mtable">
                     <TableComponent
-                        onDataTableUpdate={this.handleDataTable.bind(this)}
+                        onDataUpdate={this.handleDataTable.bind(this)}
                         onAddRow={this.handleAddRow.bind(this)}
                         onRemoveRow={this.handleRemoveRow.bind(this)}
                         mdpData={this.state.mdpdata}/>
